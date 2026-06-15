@@ -1,0 +1,4 @@
+﻿No.,Question,Option_1,Option_2,Option_3,Option_4,Explanation,Correct Answer
+1,Which data type is immutable?,list,tuple,dict,set,Tuples cannot be modified after creation.,tuple
+2,Which function returns the length of a string?,size(),len(),count(),length(),`len()` returns the number of characters in a string.,len()
+3,How do you handle exceptions in Python?,try-except,catch,handle,error,Python uses try-except for exception handling.,try-except

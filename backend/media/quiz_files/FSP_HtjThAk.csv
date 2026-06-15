@@ -1,0 +1,36 @@
+﻿No.,Question,Option_1,Option_2,Option_3,Option_4,Explanation,Correct Answer
+1,What does HTML stand for?,Hyper Text Markup Language,High Text Machine Language,Hyper Tabular Markup Language,None,HTML is the standard language used to create web pages.,Hyper Text Markup Language
+2,Which tag is used for inserting an image?, <img>,<image>,<src>,<pic>, <img> tag is used to display images in HTML.,<img>
+3,Which tag is used to create a hyperlink?,<a>,<link>,<href>,<url>,<a> tag defines hyperlinks.,<a>
+4,Which element is used for the largest heading?,<h6>,<h1>,<head>,<heading>,<h1> is the largest heading tag.,<h1>
+5,Which tag is used to create a table row?,<td>,<tr>,<th>,<table>,<tr> defines a table row.,<tr>
+6,What does CSS stand for?,Color Style Sheets,Cascading Style Sheets,Creative Style System,Computer Style Sheets,CSS is used for styling web pages.,Cascading Style Sheets
+7,Which property is used to change text color?,background-color,text-color,color,font-color,The color property sets text color.,color
+8,"How do you select an element with id ""demo""?",.demo,#demo,demo,*demo,`#` is used for id selector.,#demo
+9,Which property controls text size?,font-size,text-style,font-style,size,font-size defines text size.,font-size
+10,Which CSS property is used for spacing inside elements?,margin,padding,border,spacing,Padding controls inner spacing.,padding
+11,Which keyword is used to declare a variable?,var,int,string,declare,"`var`, `let`, and `const` are used in JS.",var
+12,"How do you write ""Hello"" in alert box?","alertBox(""Hello"")","alert(""Hello"")","msg(""Hello"")","print(""Hello"")",alert() displays popup messages.,"alert(""Hello"")"
+13,Which operator is used for strict equality?,==,===,!=,=,`===` checks value and type.,===
+14,Which function converts string to integer?,parseInt(),int(),convert(),number(),parseInt() converts string to integer.,parseInt()
+15,Which event occurs when user clicks?,onmouseover,onchange,onclick,onload,onclick triggers on click.,onclick
+16,Bootstrap is used for?,Backend,Styling and responsiveness,Database,Server,Bootstrap is a front-end framework.,Styling and responsiveness
+17,Which class creates a button?,btn,button,btn-style,btn-class,`btn` is base class for buttons.,btn
+18,Which class makes image responsive?,img-responsive,img-fluid,responsive-img,fluid-img,`img-fluid` makes image responsive.,img-fluid
+19,Bootstrap grid has how many columns?,10,12,8,16,Bootstrap uses 12-column grid.,12
+20,Which class is used for primary button?,btn-main,btn-primary,primary-btn,btn-blue,`btn-primary` gives blue button.,btn-primary
+21,React is mainly used for?,Database,UI building,Backend,Server,React is a frontend library.,UI building
+22,Which hook is used for state?,useEffect,useState,useRef,useData,useState manages state.,useState
+23,JSX stands for?,JavaScript XML,Java Syntax Extension,JSON XML,None,JSX allows HTML in JS.,JavaScript XML
+24,Components are?,Functions,Reusable UI parts,Variables,APIs,Components are reusable blocks.,Reusable UI parts
+25,Which method renders React content?,ReactDOM.render(),render(),display(),show(),ReactDOM.render() renders UI.,ReactDOM.render()
+26,Which keyword defines a function?,func,define,function,function,`def` is used to define function.,def
+27,Which data type is mutable?,tuple,string,list,int,Lists are mutable.,list
+28,"Output of len(""Hello"")?",4,5,6,Error,Length of 'Hello' is 5.,5
+29,Which loop is used for iteration?,for,loop,iterate,repeat,`for` loop is used.,for
+30,Which symbol is used for comments?,//,#,<!-- -->,**,`#` is comment symbol.,#
+31,Django is written in?,Java,Python,PHP,C++,Django is a Python framework.,Python
+32,Which command starts a project?,django-start,startproject,django-admin startproject,createproject,Used to create new project.,django-admin startproject
+33,Which file contains settings?,app.py,settings.py,config.py,main.py,settings.py stores configuration.,settings.py
+34,Django follows which pattern?,MVC,MVT,MVVM,None,Django uses MVT architecture.,MVT
+35,Which command runs server?,run,runserver,execute,execute,runserver starts development server.,runserver
