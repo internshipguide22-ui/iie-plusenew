@@ -4399,3 +4399,326 @@ const downloadBill = async (feeId, studentName = 'Student') => {
     </div>
   )
 }
+
+function AdminMediaManager({ type }) {
+  const config = {
+    gallery: { title: 'Gallery', endpoint: '/gallery/', fileKey: 'image', accept: 'image/*', icon: 'fa-images' },
+    vlogs: { title: 'Vlogs', endpoint: '/vlogs/', fileKey: 'video', accept: 'video/*', icon: 'fa-video' },
+  }[type]
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState({ title: '', file: null })
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const r = await api.get(config.endpoint)
+      setItems(r.data.results || r.data || [])
+    } catch {
+      toast.error(`Failed to load ${config.title.toLowerCase()}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { load() }, [config.endpoint])
+
+  const submit = async (e) => {
+    e.preventDefault()
+    if (!form.title.trim()) return toast.error('Title is required')
+    if (!form.file) return toast.error('File is required')
+    const data = new FormData()
+    data.append('title', form.title.trim())
+    data.append(config.fileKey, form.file)
+    setSaving(true)
+    try {
+      await api.post(config.endpoint, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      toast.success(`${config.title} item uploaded`)
+      setForm({ title: '', file: null })
+      e.target.reset()
+      load()
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Upload failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const remove = async (item) => {
+    if (!window.confirm(`Delete "${item.title}"?`)) return
+    try {
+      await api.delete(`${config.endpoint}${item.id}/`)
+      toast.success('Deleted')
+      load()
+    } catch {
+      toast.error('Delete failed')
+    }
+  }
+
+  return (
+    <div className="admin-root admin-fade">
+      <AdminStyles />
+      <AdminPageHeader title={config.title} sub={`Manage ${config.title.toLowerCase()} content`} />
+      <div className="admin-card">
+        <AdminSectionHeader title={`Upload ${config.title}`} />
+        <form onSubmit={submit} style={{ padding: 22, display: 'grid', gap: 14 }}>
+          <input className="admin-input" placeholder="Title" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
+          <input className="admin-input" type="file" accept={config.accept} onChange={e => setForm(p => ({ ...p, file: e.target.files?.[0] || null }))} />
+          <button className="admin-btn admin-btn-primary" disabled={saving}>
+            <i className={`fas ${saving ? 'fa-spinner fa-spin' : config.icon}`} />
+            {saving ? 'Uploading...' : 'Upload'}
+          </button>
+        </form>
+      </div>
+      <div className="admin-card">
+        <AdminSectionHeader title={config.title} count={items.length} />
+        {loading ? <AdminSpin /> : items.length === 0 ? (
+          <AdminEmpty msg={`No ${config.title.toLowerCase()} yet`} icon={config.icon} />
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table className="admin-table">
+              <thead><tr><th>Title</th><th>Uploaded By</th><th>Created</th><th>Actions</th></tr></thead>
+              <tbody>
+                {items.map(item => (
+                  <tr key={item.id}>
+                    <td style={{ fontWeight: 700 }}>{item.title}</td>
+                    <td>{item.uploaded_by_name || '-'}</td>
+                    <td>{item.created_at ? new Date(item.created_at).toLocaleString('en-IN') : '-'}</td>
+                    <td><button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => remove(item)}><i className="fas fa-trash" /> Delete</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export function AdminGallery() { return <AdminMediaManager type="gallery" /> }
+export function AdminVlogs() { return <AdminMediaManager type="vlogs" /> }
+
+export function AdminNews() {
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState({ title: '', message: '', image: null })
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const r = await api.get('/news/')
+      setItems(r.data.results || r.data || [])
+    } catch {
+      toast.error('Failed to load news')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { load() }, [])
+
+  const publish = async (e) => {
+    e.preventDefault()
+    if (!form.title.trim()) return toast.error('Title is required')
+    if (!form.message.trim()) return toast.error('Message is required')
+    const data = new FormData()
+    data.append('title', form.title.trim())
+    data.append('message', form.message.trim())
+    if (form.image) data.append('image', form.image)
+    setSaving(true)
+    try {
+      await api.post('/news/', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      toast.success('News published')
+      setForm({ title: '', message: '', image: null })
+      e.target.reset()
+      load()
+    } catch {
+      toast.error('Publish failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const remove = async (item) => {
+    if (!window.confirm(`Delete "${item.title}"?`)) return
+    try {
+      await api.delete(`/news/${item.id}/`)
+      toast.success('Deleted')
+      load()
+    } catch {
+      toast.error('Delete failed')
+    }
+  }
+
+  return (
+    <div className="admin-root admin-fade">
+      <AdminStyles />
+      <AdminPageHeader title="News" sub="Post news updates that appear in the mobile app" />
+      <div className="admin-card">
+        <AdminSectionHeader title="Publish News" />
+        <form onSubmit={publish} style={{ padding: 22, display: 'grid', gap: 14 }}>
+          <input className="admin-input" placeholder="Title" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
+          <textarea className="admin-input" rows={4} placeholder="Message" value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} />
+          <input className="admin-input" type="file" accept="image/*" onChange={e => setForm(p => ({ ...p, image: e.target.files?.[0] || null }))} />
+          <button className="admin-btn admin-btn-primary" disabled={saving}><i className={`fas ${saving ? 'fa-spinner fa-spin' : 'fa-newspaper'}`} /> {saving ? 'Publishing...' : 'Publish'}</button>
+        </form>
+      </div>
+      <SimpleAdminTable title="News Items" items={items} loading={loading} emptyIcon="fa-newspaper" emptyMsg="No news yet" columns={['Title', 'Message', 'Created']} renderRow={(item) => (
+        <>
+          <td style={{ fontWeight: 700 }}>{item.title}</td>
+          <td>{String(item.message || '').slice(0, 120)}</td>
+          <td>{item.created_at ? new Date(item.created_at).toLocaleString('en-IN') : '-'}</td>
+          <td><button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => remove(item)}><i className="fas fa-trash" /> Delete</button></td>
+        </>
+      )} />
+    </div>
+  )
+}
+
+export function AdminCalendar() {
+  const today = new Date().toISOString().slice(0, 10)
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState({ event_name: '', event_date: today, event_time: '', message: '' })
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const r = await api.get('/calendar-events/')
+      setItems(r.data.results || r.data || [])
+    } catch {
+      toast.error('Failed to load calendar events')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { load() }, [])
+
+  const submit = async (e) => {
+    e.preventDefault()
+    if (!form.event_name.trim()) return toast.error('Event name is required')
+    if (!form.event_date) return toast.error('Date is required')
+    if (!form.event_time) return toast.error('Time is required')
+    setSaving(true)
+    try {
+      await api.post('/calendar-events/', { ...form, message: form.message.trim() || form.event_name.trim() })
+      toast.success('Event saved')
+      setForm({ event_name: '', event_date: today, event_time: '', message: '' })
+      load()
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Save failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const remove = async (item) => {
+    if (!window.confirm(`Delete "${item.event_name}"?`)) return
+    try {
+      await api.delete(`/calendar-events/${item.id}/`)
+      toast.success('Deleted')
+      load()
+    } catch {
+      toast.error('Delete failed')
+    }
+  }
+
+  return (
+    <div className="admin-root admin-fade">
+      <AdminStyles />
+      <AdminPageHeader title="Calendar" sub="Manage upcoming events" />
+      <div className="admin-card">
+        <AdminSectionHeader title="Add Event" />
+        <form onSubmit={submit} style={{ padding: 22, display: 'grid', gap: 14 }}>
+          <input className="admin-input" placeholder="Event name" value={form.event_name} onChange={e => setForm(p => ({ ...p, event_name: e.target.value }))} />
+          <div className="admin-row-grid-2">
+            <input className="admin-input" type="date" value={form.event_date} onChange={e => setForm(p => ({ ...p, event_date: e.target.value }))} />
+            <input className="admin-input" type="time" value={form.event_time} onChange={e => setForm(p => ({ ...p, event_time: e.target.value }))} />
+          </div>
+          <textarea className="admin-input" rows={3} placeholder="Message" value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} />
+          <button className="admin-btn admin-btn-primary" disabled={saving}><i className={`fas ${saving ? 'fa-spinner fa-spin' : 'fa-calendar-plus'}`} /> {saving ? 'Saving...' : 'Save Event'}</button>
+        </form>
+      </div>
+      <SimpleAdminTable title="Events" items={items} loading={loading} emptyIcon="fa-calendar-alt" emptyMsg="No events yet" columns={['Event', 'Date', 'Time']} renderRow={(item) => (
+        <>
+          <td style={{ fontWeight: 700 }}>{item.event_name}</td>
+          <td>{item.event_date}</td>
+          <td>{item.event_time}</td>
+          <td><button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => remove(item)}><i className="fas fa-trash" /> Delete</button></td>
+        </>
+      )} />
+    </div>
+  )
+}
+
+export function AdminReferrals() {
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const r = await api.get('/referrals/')
+      setItems(r.data.results || r.data || [])
+    } catch {
+      toast.error('Failed to load referrals')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { load() }, [])
+
+  const remove = async (item) => {
+    if (!window.confirm(`Delete referral from "${item.name}"?`)) return
+    try {
+      await api.delete(`/referrals/${item.id}/`)
+      toast.success('Deleted')
+      load()
+    } catch {
+      toast.error('Delete failed')
+    }
+  }
+
+  return (
+    <div className="admin-root admin-fade">
+      <AdminStyles />
+      <AdminPageHeader title="Referrals" sub="View referral contacts submitted from the mobile app" />
+      <SimpleAdminTable title="Referral Submissions" items={items} loading={loading} emptyIcon="fa-user-plus" emptyMsg="No referrals submitted yet" columns={['Name', 'Mobile Number', 'Submitted At']} renderRow={(item) => (
+        <>
+          <td style={{ fontWeight: 700 }}>{item.name}</td>
+          <td>{item.mobile}</td>
+          <td>{item.created_at ? new Date(item.created_at).toLocaleString('en-IN') : '-'}</td>
+          <td><button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => remove(item)}><i className="fas fa-trash" /> Delete</button></td>
+        </>
+      )} />
+    </div>
+  )
+}
+
+function SimpleAdminTable({ title, items, loading, emptyIcon, emptyMsg, columns, renderRow }) {
+  return (
+    <div className="admin-card">
+      <AdminSectionHeader title={title} count={items.length} />
+      {loading ? <AdminSpin /> : items.length === 0 ? (
+        <AdminEmpty msg={emptyMsg} icon={emptyIcon} />
+      ) : (
+        <div style={{ overflowX: 'auto' }}>
+          <table className="admin-table">
+            <thead>
+              <tr>{columns.map(col => <th key={col}>{col}</th>)}<th>Actions</th></tr>
+            </thead>
+            <tbody>
+              {items.map(item => <tr key={item.id}>{renderRow(item)}</tr>)}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}

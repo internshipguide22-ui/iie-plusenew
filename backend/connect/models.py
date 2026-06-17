@@ -9,16 +9,8 @@ from django.core.validators import FileExtensionValidator
 
 
 class Courses(models.Model):
-
     course_name = models.CharField(max_length=255, unique=True)
-
-    course_type = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True
-    )    
-    course_name = models.CharField ( max_length = 255 , unique = True )
-    course_type = models.CharField(max_length=100)
+    course_type = models.CharField(max_length=100, blank=True, null=True)
     fee = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     course_logsheet = models.FileField (
             upload_to = 'course_logsheets/' ,
@@ -1360,3 +1352,91 @@ class CourseType(models.Model):
     class Meta:
         db_table = 'course_type'
         ordering = ['name']
+
+
+class GalleryItem(models.Model):
+    """Event photo uploaded by admin for the gallery."""
+    title = models.CharField(max_length=200)
+    image = models.ImageField(
+        upload_to='gallery/',
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])]
+    )
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'gallery_items'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class VlogItem(models.Model):
+    """Video uploaded by admin for vlogs."""
+    title = models.CharField(max_length=200)
+    video = models.FileField(
+        upload_to='vlogs/',
+        validators=[FileExtensionValidator(allowed_extensions=['mp4', 'mov', 'webm', 'mkv'])]
+    )
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'vlog_items'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class NewsItem(models.Model):
+    """News update uploaded by admin for public mobile users."""
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    image = models.ImageField(
+        upload_to='news/',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])]
+    )
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'news_items'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class CalendarEvent(models.Model):
+    """Upcoming event posted by admin for the mobile calendar."""
+    event_name = models.CharField(max_length=200)
+    event_date = models.DateField()
+    event_time = models.TimeField()
+    message = models.TextField()
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'calendar_events'
+        ordering = ['event_date', 'event_time', '-created_at']
+
+    def __str__(self):
+        return f"{self.event_name} - {self.event_date}"
+
+
+class Referral(models.Model):
+    """Referral submitted from the public mobile app."""
+    name = models.CharField(max_length=120)
+    mobile = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'referrals'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} - {self.mobile}"

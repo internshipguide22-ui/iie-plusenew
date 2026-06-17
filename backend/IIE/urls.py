@@ -43,6 +43,18 @@ urlpatterns = [
     path('api/courses/', v.CourseListCreateView.as_view()),
     path('api/courses/<int:pk>/', v.CourseDetailView.as_view()),
 
+    # Admin gallery, vlogs, news, calendar, and referrals
+    path('api/gallery/', v.GalleryItemListCreateView.as_view()),
+    path('api/gallery/<int:pk>/', v.GalleryItemDetailView.as_view()),
+    path('api/vlogs/', v.VlogItemListCreateView.as_view()),
+    path('api/vlogs/<int:pk>/', v.VlogItemDetailView.as_view()),
+    path('api/news/', v.NewsItemListCreateView.as_view()),
+    path('api/news/<int:pk>/', v.NewsItemDetailView.as_view()),
+    path('api/calendar-events/', v.CalendarEventListCreateView.as_view()),
+    path('api/calendar-events/<int:pk>/', v.CalendarEventDetailView.as_view()),
+    path('api/referrals/', v.ReferralListCreateView.as_view()),
+    path('api/referrals/<int:pk>/', v.ReferralDetailView.as_view()),
+
     # ── EMPLOYEES ─────────────────────────────────────────────────────────────
     path('api/employees/', v.EmployeeListView.as_view()),
     path('api/employees/create/', v.EmployeeCreateView.as_view()),

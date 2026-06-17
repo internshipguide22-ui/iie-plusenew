@@ -16,6 +16,7 @@ import {
   AdminMentorSupportRequest, AdminMentorSupportHistory,
   AdminCounselorSupportRequest, AdminCounselorSupportHistory,
   AdminStudentSupportRequest, AdminStudentSupportHistory, AdminAnnouncements, AdminFeeManagement,
+  AdminCalendar, AdminGallery, AdminNews, AdminReferrals, AdminVlogs,
   AdminEmployeeMonitoring, AdminStudentMonitoring,
 } from './pages/admin/AdminPages'
 
@@ -78,6 +79,11 @@ function AppRoutes() {
         <Route path="assigned" element={<AdminAssignedStudents />} />
         <Route path="batches" element={<BatchesList />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
+        <Route path="gallery" element={<AdminGallery />} />
+        <Route path="vlogs" element={<AdminVlogs />} />
+        <Route path="news" element={<AdminNews />} />
+        <Route path="calendar" element={<AdminCalendar />} />
+        <Route path="referrals" element={<AdminReferrals />} />
         <Route path="fees" element={<AdminFeeManagement />} />   {/* ← ADD inside /admin routes */}
 
         <Route path="monitoring/employees" element={<AdminEmployeeMonitoring />} />
@@ -100,6 +106,9 @@ function AppRoutes() {
         <Route path="attendance" element={<AdminBranchAttendance />} />
         <Route path="materials" element={<AdminMaterialsOverview />} />
         <Route path="test-results" element={<AdminTestResults />} />
+        <Route path="quiz/upload" element={<UploadQuiz />} />
+        <Route path="quiz" element={<ManageQuizzes />} />
+        <Route path="quiz-results" element={<StaffQuizResults />} />
         <Route path="completed" element={<CompletedStudents />} />
       </Route>
 

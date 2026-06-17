@@ -141,10 +141,20 @@ function AdminNav() {
       <NavGroup icon="fa-book-open" label="Materials">
         <SubLink to="/admin/materials" label="View Materials" />
       </NavGroup>
+      <NavGroup icon="fa-pencil-alt" label="Quiz Management">
+        <SubLink to="/admin/quiz/upload" label="Upload Quiz" />
+        <SubLink to="/admin/quiz" label="Manage Quizzes" />
+        <SubLink to="/admin/quiz-results" label="Quiz Results" />
+      </NavGroup>
       <NavGroup icon="fa-user-clock" label="User Monitoring">
         <SubLink to="/admin/monitoring/employees" label="Employee Monitoring" />
         <SubLink to="/admin/monitoring/students" label="Student Monitoring" />
       </NavGroup>
+      <NavItem to="/admin/gallery" icon="fa-images" label="Gallery" />
+      <NavItem to="/admin/vlogs" icon="fa-video" label="Vlogs" />
+      <NavItem to="/admin/news" icon="fa-newspaper" label="News" />
+      <NavItem to="/admin/calendar" icon="fa-calendar-alt" label="Calendar" />
+      <NavItem to="/admin/referrals" icon="fa-user-plus" label="Referrals" />
       <NavItem to="/admin/completed" icon="fa-graduation-cap" label="Completed Students" />
       <NavItem to="/admin/fees" icon="fa-rupee-sign" label="Fee Management" />  {/* ← ADD */}
 

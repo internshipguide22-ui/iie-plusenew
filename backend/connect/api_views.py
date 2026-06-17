@@ -6,13 +6,13 @@ from html import escape
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.db import DatabaseError
+from django.db import DatabaseError, IntegrityError, OperationalError
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -116,6 +116,7 @@ from .models import (
     Announcement, CounselorLeaveRequest, CounselorSupportRequest,
     Quiz, QuizQuestion, QuizAttempt, QuizAnswer,
     CompletedStudent, SessionCompletionRequest, TestResult,FeePaymentRequest,
+    GalleryItem, VlogItem, NewsItem, CalendarEvent, Referral,
 )
 from .serializers import (
     CourseSerializer, EmployeeSerializer,
@@ -127,7 +128,9 @@ from .serializers import (
     AnnouncementSerializer, CounselorLeaveRequestSerializer,
     CounselorSupportRequestSerializer, QuizSerializer, QuizQuestionSerializer,
     QuizAttemptSerializer, CompletedStudentSerializer,
-    SessionCompletionRequestSerializer, LoginSerializer
+    SessionCompletionRequestSerializer, LoginSerializer,
+    GalleryItemSerializer, VlogItemSerializer, NewsItemSerializer,
+    CalendarEventSerializer, ReferralSerializer, strip_unsupported_mysql_chars,
 )
 
 
@@ -530,6 +533,169 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+
+class GalleryItemListCreateView(generics.ListCreateAPIView):
+    queryset = GalleryItem.objects.all().order_by('-created_at')
+    serializer_class = GalleryItemSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by=self.request.user)
+
+
+class GalleryItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = GalleryItem.objects.all()
+    serializer_class = GalleryItemSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+
+class VlogItemListCreateView(generics.ListCreateAPIView):
+    queryset = VlogItem.objects.all().order_by('-created_at')
+    serializer_class = VlogItemSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by=self.request.user)
+
+
+class VlogItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = VlogItem.objects.all()
+    serializer_class = VlogItemSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+
+class NewsItemListCreateView(generics.ListCreateAPIView):
+    queryset = NewsItem.objects.all().order_by('-created_at')
+    serializer_class = NewsItemSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by=self.request.user)
+
+
+class NewsItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = NewsItem.objects.all()
+    serializer_class = NewsItemSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+
+class CalendarEventListCreateView(generics.ListCreateAPIView):
+    queryset = CalendarEvent.objects.all().order_by('event_date', 'event_time', '-created_at')
+    serializer_class = CalendarEventSerializer
+    parser_classes = [JSONParser, FormParser, MultiPartParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        event_name = strip_unsupported_mysql_chars(data.get('event_name') or data.get('title') or '').strip()
+        message = strip_unsupported_mysql_chars(data.get('message') or data.get('description') or '').strip()
+        event_date = str(data.get('event_date') or data.get('date') or '').strip()
+        event_time = str(data.get('event_time') or data.get('time') or '').strip()
+
+        if event_name:
+            data['event_name'] = event_name
+        if not message and event_name:
+            message = event_name
+        if message:
+            data['message'] = message
+
+        if event_date:
+            for fmt in ('%Y-%m-%d', '%d-%m-%Y', '%d/%m/%Y'):
+                try:
+                    data['event_date'] = datetime.strptime(event_date, fmt).date().isoformat()
+                    break
+                except ValueError:
+                    continue
+            else:
+                data['event_date'] = event_date
+
+        if event_time:
+            event_time = event_time.upper().replace('.', '').strip()
+            parsed_time = None
+            for fmt in ('%H:%M:%S', '%H:%M', '%I:%M %p', '%I:%M:%S %p'):
+                try:
+                    parsed_time = datetime.strptime(event_time, fmt).time()
+                    break
+                except ValueError:
+                    continue
+            data['event_time'] = parsed_time.strftime('%H:%M:%S') if parsed_time else event_time
+
+        try:
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except OperationalError as exc:
+            return Response({'error': f'Calendar database error: {exc}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except IntegrityError as exc:
+            return Response({'error': f'Calendar save error: {exc}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CalendarEventDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CalendarEvent.objects.all()
+    serializer_class = CalendarEventSerializer
+    parser_classes = [JSONParser, FormParser, MultiPartParser]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+
+class ReferralListCreateView(generics.ListCreateAPIView):
+    queryset = Referral.objects.all().order_by('-created_at')
+    serializer_class = ReferralSerializer
+    parser_classes = [JSONParser, FormParser]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+
+class ReferralDetailView(generics.RetrieveDestroyAPIView):
+    queryset = Referral.objects.all()
+    serializer_class = ReferralSerializer
+    permission_classes = [IsAdminUser]
 
 
 # ── EMPLOYEES ────────────────────────────────────────────────────────────────
@@ -6091,4 +6257,3 @@ def admin_course_type_detail(request, pk):
         ct.name = request.data['name'].strip()
     ct.save()
     return Response({'id': ct.id, 'name': ct.name, 'value': ct.value, 'is_active': ct.is_active})
-

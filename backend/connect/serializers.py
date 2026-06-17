@@ -8,8 +8,14 @@ from .models import (
     SessionNotification, StudentSessionStatus, Student_Session_Progress,
     DoubtResponse, Announcement, AnnouncementView, CounselorLeaveRequest,
     CounselorSupportRequest, Quiz, QuizQuestion, QuizAttempt, QuizAnswer,
-    CompletedStudent, SessionCompletionRequest, TrainerSessionReport, TestResult
+    CompletedStudent, SessionCompletionRequest, TrainerSessionReport, TestResult,
+    GalleryItem, VlogItem, NewsItem, CalendarEvent, Referral
 )
+
+
+def strip_unsupported_mysql_chars(value):
+    """Remove 4-byte unicode chars such as emojis for older MySQL utf8 columns."""
+    return ''.join(ch for ch in str(value or '') if ord(ch) <= 0xFFFF)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -22,6 +28,73 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
         fields = '__all__'
+
+
+class GalleryItemSerializer(serializers.ModelSerializer):
+    uploaded_by_name = serializers.CharField(source='uploaded_by.username', read_only=True)
+
+    class Meta:
+        model = GalleryItem
+        fields = '__all__'
+        read_only_fields = ['uploaded_by', 'created_at']
+
+
+class VlogItemSerializer(serializers.ModelSerializer):
+    uploaded_by_name = serializers.CharField(source='uploaded_by.username', read_only=True)
+
+    class Meta:
+        model = VlogItem
+        fields = '__all__'
+        read_only_fields = ['uploaded_by', 'created_at']
+
+
+class NewsItemSerializer(serializers.ModelSerializer):
+    uploaded_by_name = serializers.CharField(source='uploaded_by.username', read_only=True)
+
+    class Meta:
+        model = NewsItem
+        fields = '__all__'
+        read_only_fields = ['uploaded_by', 'created_at']
+
+
+class CalendarEventSerializer(serializers.ModelSerializer):
+    uploaded_by_name = serializers.CharField(source='uploaded_by.username', read_only=True)
+
+    class Meta:
+        model = CalendarEvent
+        fields = '__all__'
+        read_only_fields = ['uploaded_by', 'created_at']
+
+    def validate_event_name(self, value):
+        value = strip_unsupported_mysql_chars(value).strip()
+        if len(value) < 2:
+            raise serializers.ValidationError('Event name must be at least 2 characters.')
+        return value
+
+    def validate_message(self, value):
+        value = strip_unsupported_mysql_chars(value).strip()
+        if len(value) < 2:
+            raise serializers.ValidationError('Message must be at least 2 characters.')
+        return value
+
+
+class ReferralSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Referral
+        fields = '__all__'
+        read_only_fields = ['created_at']
+
+    def validate_name(self, value):
+        value = value.strip()
+        if len(value) < 2:
+            raise serializers.ValidationError('Name must be at least 2 characters.')
+        return value
+
+    def validate_mobile(self, value):
+        cleaned = ''.join(ch for ch in value if ch.isdigit())
+        if len(cleaned) < 10 or len(cleaned) > 15:
+            raise serializers.ValidationError('Enter a valid mobile number.')
+        return cleaned
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
