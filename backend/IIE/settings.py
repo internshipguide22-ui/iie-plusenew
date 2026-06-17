@@ -20,9 +20,12 @@ def env_list(key, default=None, sep=','):
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-ep3$472yfj_22mh+dxwp0v++0$y22@j@gkxr*-m1a%_z%om($0')
 
-DEBUG = getenv_bool('DJANGO_DEBUG', False)
+DEBUG = getenv_bool('DJANGO_DEBUG', True)
 
-ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS')
+ALLOWED_HOSTS = env_list(
+    'DJANGO_ALLOWED_HOSTS',
+    ['localhost', '127.0.0.1', '0.0.0.0', '10.0.2.2', '*'] if DEBUG else []
+)
 CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS')
 INSTALLED_APPS = [
     'django.contrib.admin',
