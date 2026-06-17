@@ -52,7 +52,12 @@ const sideNavItems: Array<{
   route?: Href;
   privateOnly?: boolean;
 }> = [
-  { key: "overview", label: "Overview", icon: "grid-outline", route: "/home", privateOnly: true },
+  { key: "overview", label: "Overview", icon: "grid-outline", route: "/home" },
+  { key: "attendance", label: "Attendance", icon: "time-outline", route: "/attendance", privateOnly: true },
+  { key: "logsheet", label: "Logsheet", icon: "document-text-outline", route: "/logsheet", privateOnly: true },
+  { key: "quizzes", label: "Quizzes", icon: "school-outline", route: "/quizzes", privateOnly: true },
+  { key: "practice", label: "Practice Test", icon: "clipboard-outline", module: "practice" },
+  { key: "calendar", label: "Calendar", icon: "calendar-outline", module: "calendar" },
   { key: "materials", label: "Materials", icon: "book-outline", route: "/materials", privateOnly: true },
   { key: "leave", label: "Leave", icon: "calendar-outline", route: "/leaveapply", privateOnly: true },
   { key: "support", label: "Support", icon: "help-buoy-outline", route: "/support", privateOnly: true },
@@ -69,11 +74,72 @@ const bottomNavItems: Array<{
   route?: Href;
   privateOnly?: boolean;
 }> = [
-  { key: "overview", label: "Overview", icon: "grid-outline", route: "/home", privateOnly: true },
-  { key: "attendance", label: "Attendance", icon: "time-outline", route: "/attendance", privateOnly: true },
+  { key: "overview", label: "Overview", icon: "grid-outline", route: "/home" },
+  { key: "news", label: "News", icon: "newspaper-outline", module: "news" },
   { key: "home", label: "Home", icon: "home", module: "home" },
-  { key: "logsheet", label: "Logsheet", icon: "document-text-outline", route: "/logsheet", privateOnly: true },
-  { key: "quizzes", label: "Quizzes", icon: "school-outline", route: "/quizzes", privateOnly: true },
+  { key: "gallery", label: "Gallery", icon: "image-outline", module: "gallery" },
+  { key: "vlogs", label: "Vlogs", icon: "videocam-outline", module: "vlogs" },
+];
+
+type CourseCategory =
+  | "Cloud & DevOps"
+  | "Networking"
+  | "Cybersecurity"
+  | "Data & AI"
+  | "Programming"
+  | "Office & Accounts"
+  | "Design"
+  | "Testing"
+  | "Foundation"
+  | "Marketing";
+
+type CourseItem = {
+  name: string;
+  category: CourseCategory;
+  link: string;
+};
+
+const courseItems: CourseItem[] = [
+  { name: "Artificial Intelligence (AI)", category: "Data & AI", link: "https://indrainstitute.com/courses/artificial-intelligence/" },
+  { name: "Python with DS & ML", category: "Data & AI", link: "https://indrainstitute.com/courses/python-with-ds-ml/" },
+  { name: "Full Stack Python", category: "Programming", link: "https://indrainstitute.com/courses/full-stack-python/" },
+  { name: "Core Python", category: "Programming", link: "https://indrainstitute.com/courses/core-python/" },
+  { name: "Full Stack Java", category: "Programming", link: "https://indrainstitute.com/courses/full-stack-java/" },
+  { name: "Core Java", category: "Programming", link: "https://indrainstitute.com/courses/core-java/" },
+  { name: "MERN Stack", category: "Programming", link: "https://indrainstitute.com/courses/mern-stack/" },
+  { name: "MERN Stack with AWS", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/mern-stack-with-aws/" },
+  { name: "Java Cloud Architect", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/java-cloud-architect/" },
+  { name: "Data Analytics", category: "Data & AI", link: "https://indrainstitute.com/courses/data-analytics/" },
+  { name: "Data Scientist Master Programme", category: "Data & AI", link: "https://indrainstitute.com/courses/data-scientist-master-programme/" },
+  { name: "Business Analytics", category: "Data & AI", link: "https://indrainstitute.com/courses/business-analytics/" },
+  { name: "Flutter", category: "Programming", link: "https://indrainstitute.com/courses/flutter-2/" },
+  { name: "UI/UX", category: "Design", link: "https://indrainstitute.com/courses/ui-ux/" },
+  { name: "Web Development", category: "Programming", link: "https://indrainstitute.com/courses/web-development/" },
+  { name: "AWS", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/aws/" },
+  { name: "Azure AZ-900", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/azure-az-900/" },
+  { name: "Azure AZ-104", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/azure-az-104/" },
+  { name: "DevOps", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/devops/" },
+  { name: "RHCSA", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/rhcsa/" },
+  { name: "RHCE", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/rhce/" },
+  { name: "Windows AZ-800", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/windows-az-800/" },
+  { name: "Windows AZ-801", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/windows-az-801/" },
+  { name: "A+ N+", category: "Networking", link: "https://indrainstitute.com/courses/a-n/" },
+  { name: "CCNA", category: "Networking", link: "https://indrainstitute.com/courses/ccna/" },
+  { name: "CCNP", category: "Networking", link: "https://indrainstitute.com/courses/ccnp/" },
+  { name: "CCIE", category: "Networking", link: "https://indrainstitute.com/courses/ccie/" },
+  { name: "CEH (Certified Ethical Hacking)", category: "Cybersecurity", link: "https://indrainstitute.com/courses/certified-ethical-hacking/" },
+  { name: "eJPT", category: "Cybersecurity", link: "https://indrainstitute.com/courses/ejpt/" },
+  { name: "HWR", category: "Foundation", link: "https://indrainstitute.com/courses/hwr/" },
+  { name: "Security+", category: "Cybersecurity", link: "https://indrainstitute.com/courses/security/" },
+  { name: "Automation Testing", category: "Testing", link: "https://indrainstitute.com/courses/automation-testing/" },
+  { name: "Selenium with Java", category: "Testing", link: "https://indrainstitute.com/courses/selenium-with-java/" },
+  { name: "Advanced Excel", category: "Office & Accounts", link: "https://indrainstitute.com/courses/advance-excel/" },
+  { name: "Digital Marketing", category: "Marketing", link: "https://indrainstitute.com/courses/digital-marketing/" },
+  { name: "SNE + Cloud", category: "Networking", link: "https://indrainstitute.com/courses/sne-cloud/" },
+  { name: "SNE + Cloud & CEH", category: "Cybersecurity", link: "https://indrainstitute.com/courses/sne-cloud-ceh/" },
+  { name: "SNE + Cloud & DevOps", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/sne-cloud-devops/" },
+  { name: "AWS & DevOps", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/aws-devops/" },
+  { name: "RHCE + AWS", category: "Cloud & DevOps", link: "https://indrainstitute.com/courses/rhce-amazon-web-service/" },
 ];
 
 const instagramUrl = "https://www.instagram.com/iie_indra_institute?igsh=MXB1OW03N3QyNmV2ag==";
@@ -262,6 +328,12 @@ export default function WelcomeScreen() {
   };
 
   const openNavItem = (item: (typeof sideNavItems)[number] | (typeof bottomNavItems)[number]) => {
+    if (item.key === "overview") {
+      setDrawerOpen(false);
+      router.push((isPrivateUser ? "/home" : "/public-overview") as any);
+      return;
+    }
+
     if (item.privateOnly && !isPrivateUser) {
       showRegisterPrompt();
       return;
@@ -492,6 +564,9 @@ function HomeContent({
     .slice(0, 4);
   const eventScrollRef = useRef<ScrollView>(null);
   const [eventIndex, setEventIndex] = useState(0);
+  const [showAllCourses, setShowAllCourses] = useState(false);
+  const courseReveal = useRef(new Animated.Value(0)).current;
+  const visibleCourses = showAllCourses ? courseItems : courseItems.slice(0, 4);
 
   useEffect(() => {
     if (upcomingEvents.length <= 1) return;
@@ -504,6 +579,16 @@ function HomeContent({
     }, 3600);
     return () => clearInterval(timer);
   }, [upcomingEvents.length]);
+
+  useEffect(() => {
+    courseReveal.setValue(0);
+    Animated.timing(courseReveal, {
+      toValue: 1,
+      duration: 520,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [courseReveal, showAllCourses]);
 
   return (
     <>
@@ -592,39 +677,82 @@ function HomeContent({
           </View>
         </View>
 
-      <View style={styles.cardGrid}>
-        <FeatureCard
-          title="News"
-          description="Read fresh updates and important highlights."
-          icon="newspaper"
-          color="#5A25D8"
-          softColor="#F4EEFF"
-          onPress={() => openModule("news")}
-        />
-        <FeatureCard
-          title="Gallery"
-          description="Explore memorable moments and events."
-          icon="image"
-          color="#1674E8"
-          softColor="#EEF6FF"
-          onPress={() => openModule("gallery")}
-        />
-        <FeatureCard
-          title="Practice Tests"
-          description="Sharpen your skills with our practice tests."
-          icon="clipboard"
-          color="#55B313"
-          softColor="#F3FAEC"
-          onPress={() => openModule("practice")}
-        />
-        <FeatureCard
-          title="Calendar"
-          description="View important dates and stay updated."
-          icon="calendar"
-          color="#F47C0B"
-          softColor="#FFF3E8"
-          onPress={() => openModule("calendar")}
-        />
+      <View style={styles.courseSection}>
+        <View style={styles.courseHeading}>
+          <View style={styles.courseHeadingIcon}>
+            <Ionicons name="school-outline" size={20} color="#5523D2" />
+          </View>
+          <ThemedText style={styles.courseHeadingTitle}>Course Catalog</ThemedText>
+        </View>
+
+        <View style={styles.courseGrid}>
+          {visibleCourses.map((course, index) => {
+            const visual = getCourseVisual(course.category);
+            const animatedStyle = {
+              opacity: courseReveal,
+              transform: [
+                {
+                  translateY: courseReveal.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [14 + index * 2, 0],
+                  }),
+                },
+              ],
+            };
+
+            return (
+              <Animated.View
+                key={`${course.name}-${course.category}`}
+                style={[styles.courseCard, animatedStyle]}
+              >
+                <View style={styles.courseCardContent}>
+                  <View style={[styles.courseIconTile, { backgroundColor: visual.softColor }]}>
+                    <Ionicons name={visual.icon} size={29} color={visual.color} />
+                  </View>
+
+                  <View style={styles.courseCopy}>
+                    <ThemedText
+                      style={styles.courseTitle}
+                      numberOfLines={3}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.78}
+                    >
+                      {course.name}
+                    </ThemedText>
+
+                    <View style={styles.courseMetaRow}>
+                      <View style={[styles.courseMetaDot, { backgroundColor: visual.color }]} />
+                      <ThemedText style={styles.courseMetaText} numberOfLines={1}>
+                        {course.category}
+                      </ThemedText>
+                    </View>
+                  </View>
+                </View>
+
+                <Pressable
+                  accessibilityLabel={`View ${course.name} course`}
+                  style={[styles.courseArrowButton, { backgroundColor: visual.color }]}
+                  onPress={() => openExternalLink(course.link)}
+                >
+                  <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
+                </Pressable>
+
+                <View style={[styles.courseBottomLine, { backgroundColor: visual.color }]} />
+              </Animated.View>
+            );
+          })}
+        </View>
+
+        <Pressable style={styles.courseToggle} onPress={() => setShowAllCourses((value) => !value)}>
+          <ThemedText style={styles.courseToggleText}>
+            {showAllCourses ? "Show less" : "See more courses"}
+          </ThemedText>
+          <Ionicons
+            name={showAllCourses ? "chevron-up" : "chevron-down"}
+            size={18}
+            color="#5523D2"
+          />
+        </Pressable>
       </View>
 
       <View style={styles.homeCalendarCard}>
@@ -1366,34 +1494,93 @@ function PlaceholderModule({ module }: { module: ModuleKey }) {
   );
 }
 
-function FeatureCard({
-  title,
-  description,
-  icon,
-  color,
-  softColor,
-  onPress,
-}: {
-  title: string;
-  description: string;
+function getCourseVisual(category: CourseCategory): {
   icon: keyof typeof Ionicons.glyphMap;
   color: string;
   softColor: string;
-  onPress?: () => void;
-}) {
-  return (
-    <Pressable style={[styles.featureCard, { backgroundColor: softColor }]} onPress={onPress}>
-      <View style={[styles.featureIcon, { backgroundColor: color }]}>
-        <Ionicons name={icon} size={28} color="#fff" />
-      </View>
-      <ThemedText style={[styles.featureTitle, { color }]}>{title}</ThemedText>
-      <View style={[styles.featureLine, { backgroundColor: color }]} />
-      <ThemedText style={styles.featureDescription}>{description}</ThemedText>
-      <View style={[styles.featureArrow, { backgroundColor: color }]}>
-        <Ionicons name="arrow-forward" size={19} color="#fff" />
-      </View>
-    </Pressable>
-  );
+  cardColor: string;
+  borderColor: string;
+} {
+  const visuals: Record<CourseCategory, {
+    icon: keyof typeof Ionicons.glyphMap;
+    color: string;
+    softColor: string;
+    cardColor: string;
+    borderColor: string;
+  }> = {
+    "Cloud & DevOps": {
+      icon: "cloud-done-outline",
+      color: "#5523D2",
+      softColor: "#F4EEFF",
+      cardColor: "#FBF8FF",
+      borderColor: "#D8B4FE",
+    },
+    Networking: {
+      icon: "git-network-outline",
+      color: "#1674E8",
+      softColor: "#EEF6FF",
+      cardColor: "#F7FBFF",
+      borderColor: "#BFDBFE",
+    },
+    Cybersecurity: {
+      icon: "shield-checkmark-outline",
+      color: "#DC2626",
+      softColor: "#FEF2F2",
+      cardColor: "#FFFBFB",
+      borderColor: "#FECACA",
+    },
+    "Data & AI": {
+      icon: "analytics-outline",
+      color: "#0891B2",
+      softColor: "#ECFEFF",
+      cardColor: "#F7FEFF",
+      borderColor: "#A5F3FC",
+    },
+    Programming: {
+      icon: "code-slash-outline",
+      color: "#16A34A",
+      softColor: "#ECFDF5",
+      cardColor: "#F7FFF9",
+      borderColor: "#BBF7D0",
+    },
+    "Office & Accounts": {
+      icon: "calculator-outline",
+      color: "#C2410C",
+      softColor: "#FFF7ED",
+      cardColor: "#FFFCF8",
+      borderColor: "#FED7AA",
+    },
+    Design: {
+      icon: "color-palette-outline",
+      color: "#C026D3",
+      softColor: "#FDF4FF",
+      cardColor: "#FFFAFF",
+      borderColor: "#F5D0FE",
+    },
+    Testing: {
+      icon: "bug-outline",
+      color: "#7C2D12",
+      softColor: "#FFF7ED",
+      cardColor: "#FFFCF8",
+      borderColor: "#FDBA74",
+    },
+    Foundation: {
+      icon: "desktop-outline",
+      color: "#475569",
+      softColor: "#F1F5F9",
+      cardColor: "#F8FAFC",
+      borderColor: "#CBD5E1",
+    },
+    Marketing: {
+      icon: "megaphone-outline",
+      color: "#5523D2",
+      softColor: "#F5F3FF",
+      cardColor: "#FBF9FF",
+      borderColor: "#E9D5FF",
+    },
+  };
+
+  return visuals[category];
 }
 
 function ModulePanel({
@@ -2043,11 +2230,142 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 12,
   },
-  cardGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+  courseSection: {
+    backgroundColor: "#FDFCFF",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#E9D5FF",
+    padding: 12,
     marginBottom: 16,
+    shadowColor: "#5523D2",
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+  courseHeading: {
+    minHeight: 44,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    gap: 9,
+    marginBottom: 12,
+  },
+  courseHeadingIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 12,
+    backgroundColor: "#F5F3FF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#DDD6FE",
+  },
+  courseHeadingTitle: {
+    color: "#2E1065",
+    fontSize: 18,
+    lineHeight: 23,
+    fontWeight: "900",
+  },
+  courseGrid: {
+    gap: 11,
+  },
+  courseCard: {
+    width: "100%",
+    minHeight: 106,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E9D5FF",
+    padding: 13,
+    overflow: "hidden",
+    shadowColor: "#5523D2",
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+  courseCardContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 13,
+    paddingRight: 42,
+  },
+  courseIconTile: {
+    width: 56,
+    height: 56,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  courseCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  courseTitle: {
+    color: "#111827",
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "900",
+  },
+  courseMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 7,
+  },
+  courseMetaDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  courseMetaText: {
+    flex: 1,
+    color: "#4B5563",
+    fontSize: 10.5,
+    fontWeight: "800",
+  },
+  courseArrowButton: {
+    position: "absolute",
+    right: 13,
+    top: 37,
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  courseBottomLine: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    width: 76,
+    height: 3,
+    borderTopRightRadius: 3,
+  },
+  courseToggle: {
+    minHeight: 46,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E9D5FF",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 6,
+    marginTop: 2,
+    shadowColor: "#5523D2",
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  courseToggleText: {
+    color: "#5523D2",
+    fontSize: 13,
+    fontWeight: "900",
   },
   homeCalendarCard: {
     backgroundColor: "#071846",
@@ -2206,53 +2524,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: "700",
     marginTop: 10,
-  },
-  featureCard: {
-    width: "48%",
-    minHeight: 176,
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 14,
-    elevation: 4,
-    shadowColor: "#98A2B3",
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-  },
-  featureIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  featureTitle: {
-    fontSize: 17,
-    fontWeight: "900",
-  },
-  featureLine: {
-    width: 38,
-    height: 4,
-    borderRadius: 2,
-    marginTop: 9,
-    marginBottom: 13,
-  },
-  featureDescription: {
-    color: "#111827",
-    fontSize: 12,
-    lineHeight: 18,
-    fontWeight: "700",
-    paddingRight: 8,
-  },
-  featureArrow: {
-    position: "absolute",
-    right: 14,
-    bottom: 14,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
   },
   connectedBanner: {
     backgroundColor: "#5523D2",

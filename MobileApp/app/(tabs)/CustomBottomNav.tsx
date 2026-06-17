@@ -3,12 +3,17 @@ import { Href, useRouter, useSegments } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const tabs = [
+const tabs: Array<{
+  name: string;
+  href: Href;
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}> = [
   { name: "home", href: "/home", label: "Overview", icon: "grid-outline" },
-  { name: "attendance", href: "/attendance", label: "Attendance", icon: "time-outline" },
+  { name: "news", href: { pathname: "/welcome", params: { module: "news" } }, label: "News", icon: "newspaper-outline" },
   { name: "welcome", href: "/welcome", label: "Home", icon: "home" },
-  { name: "logsheet", href: "/logsheet", label: "Logsheet", icon: "document-text-outline" },
-  { name: "quizzes", href: "/quizzes", label: "Quizzes", icon: "school-outline" },
+  { name: "gallery", href: { pathname: "/welcome", params: { module: "gallery" } }, label: "Gallery", icon: "image-outline" },
+  { name: "vlogs", href: { pathname: "/welcome", params: { module: "vlogs" } }, label: "Vlogs", icon: "videocam-outline" },
 ];
 
 export default function CustomBottomNav() {
@@ -26,7 +31,7 @@ export default function CustomBottomNav() {
         return (
           <TouchableOpacity
             key={tab.name}
-            onPress={() => router.push(tab.href as Href)}
+            onPress={() => router.push(tab.href)}
             style={[
               styles.tabButton,
               isActive && styles.tabButtonActive,

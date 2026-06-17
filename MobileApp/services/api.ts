@@ -3,7 +3,7 @@ import axios from "axios";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 
-const LAN_API_BASE_URL = "http://192.168.1.9:8000/api/";
+const LAN_API_BASE_URL = "http://192.168.1.4:8000/api/";
 
 function getExpoHostName() {
   const constants = Constants as any;

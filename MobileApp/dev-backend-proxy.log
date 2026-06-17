@@ -1,0 +1,3 @@
+[2026-06-15T11:18:17.201Z] IIE backend proxy listening on http://0.0.0.0:8082/api/
+[2026-06-15T11:18:17.209Z] Forwarding to http://127.0.0.1:8000/api/
+[2026-06-15T11:18:20.172Z] GET /api/gallery/ from 192.168.1.9

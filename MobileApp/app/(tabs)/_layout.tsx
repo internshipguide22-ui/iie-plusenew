@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react";
 import { BackHandler, PanResponder, StyleSheet, View } from "react-native";
 
 const HOME_PATH = "/welcome";
-const NO_SWIPE_PATHS = new Set(["/", HOME_PATH, "/loginform", "/register"]);
+const NO_SWIPE_PATHS = new Set(["/", HOME_PATH, "/loginform", "/register", "/public-overview"]);
 
 export default function TabsLayout() {
   const router = useRouter();
@@ -73,6 +73,7 @@ export default function TabsLayout() {
         <Tabs.Screen name="loginform" />
         <Tabs.Screen name="register" />
         <Tabs.Screen name="welcome" />
+        <Tabs.Screen name="public-overview" />
         <Tabs.Screen name="home" />
         <Tabs.Screen name="attendance/index" />
         <Tabs.Screen name="announcement" />

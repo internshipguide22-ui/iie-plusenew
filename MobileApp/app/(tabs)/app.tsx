@@ -1,4 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -51,6 +52,7 @@ type QuizResult = {
 };
 
 type QuizMode = "practice" | "excel" | "assigned-test";
+const PUBLIC_PRACTICE_RESULTS_KEY = "public_practice_results";
 
 export default function App() {
   const { quizId, mode } = useLocalSearchParams<{ quizId?: string; mode?: string }>();
@@ -244,11 +246,17 @@ export default function App() {
         auto_submitted: autoSubmitted,
       });
 
-      setResult({
+      const resultData = {
         ...response.data,
         total_marks: response.data?.total_marks ?? response.data?.total_questions ?? 0,
         correct_count: response.data?.correct_count ?? response.data?.score ?? 0,
-      });
+      };
+
+      setResult(resultData);
+
+      if (isPracticeAttempt) {
+        await savePublicPracticeResult(quiz, resultData);
+      }
     } catch (error: any) {
       Alert.alert(
         "Error",
@@ -262,6 +270,36 @@ export default function App() {
 
   const handleRestart = () => {
     loadQuiz();
+  };
+
+  const savePublicPracticeResult = async (quizItem: QuizItem, resultData: QuizResult) => {
+    try {
+      const guestSessionRaw = await AsyncStorage.getItem("guest_session");
+      const guestSession = guestSessionRaw ? JSON.parse(guestSessionRaw) : {};
+      const username = guestSession?.username || guestSession?.name || "public";
+      const storedRaw = await AsyncStorage.getItem(PUBLIC_PRACTICE_RESULTS_KEY);
+      const stored = storedRaw ? JSON.parse(storedRaw) : [];
+      const list = Array.isArray(stored) ? stored : [];
+
+      list.push({
+        username,
+        quiz_id: quizItem.id,
+        quiz_title: quizItem.title,
+        score: resultData.score,
+        total_marks: resultData.total_marks,
+        percentage: resultData.percentage,
+        is_passed: resultData.is_passed,
+        correct_count: resultData.correct_count,
+        wrong_count: resultData.wrong_count,
+        attempted_count: resultData.attempted_count,
+        total_questions: resultData.total_questions,
+        completed_at: new Date().toISOString(),
+      });
+
+      await AsyncStorage.setItem(PUBLIC_PRACTICE_RESULTS_KEY, JSON.stringify(list));
+    } catch (error) {
+      console.log("PUBLIC PRACTICE RESULT SAVE ERROR:", error);
+    }
   };
 
   const formatTime = (seconds: number) => {
